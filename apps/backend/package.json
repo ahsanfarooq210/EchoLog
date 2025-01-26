@@ -1,19 +1,22 @@
 {
   "name": "backend",
   "version": "0.0.0",
+  "main": "dist/index.js",
   "private": true,
   "scripts": {
-    "dev": "echo 'Add dev script here'",
-    "build": "echo 'Add build script here'",
-    "test": "echo 'Add test script here'",
-    "lint": "echo 'Add lint script here'"
+    "start": "pnpm with-env node dist/index.js",
+    "build": "pnpm with-env tsc",
+    "dev": "pnpm with-env ts-node-dev --respawn src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@workspace/ui": "workspace:*",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
