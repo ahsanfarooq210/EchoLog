@@ -34,3 +34,8 @@ npm-debug.log*
 # Misc
 .DS_Store
 *.pem
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
