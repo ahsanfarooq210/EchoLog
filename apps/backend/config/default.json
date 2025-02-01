@@ -1,0 +1,12 @@
+{
+  "port": "3001",
+  "envVariables": {
+    "dev": "development",
+    "staging": "staging",
+    "prod": "production"
+  },
+  "tokenVariable": "x-auth-token",
+  "awakeJobFrequencyInMinutes": "10",
+  "socket": "50",
+  "frontendURLs": ["http://localhost:3000", "http://localhost:5173"]
+}

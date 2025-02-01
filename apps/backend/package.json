@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@workspace/ui": "workspace:*",
+    "config": "^3.3.12",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
@@ -21,6 +22,7 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@types/config": "^3.3.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@workspace/eslint-config": "workspace:*",
