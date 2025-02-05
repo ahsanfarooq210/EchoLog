@@ -3,6 +3,9 @@ import cors from "cors";
 import { corsOrigin } from "./utils/general";
 import { loggerMiddleware } from "./middlewares/logger.middleware";
 import { prepareV1Routes } from "./apiVersions/v1";
+import { auth,toNodeHandler } from "@workspace/auth";
+
+
 
 const app: Express = express();
 
@@ -13,6 +16,9 @@ declare global {
     }
   }
 }
+app.all("/api/auth/*", toNodeHandler(auth));
+// Mount express json middleware after Better Auth handler
+// or only apply it to routes that don't interact with Better Auth
 
 // Middleware
 app.use(express.json());
