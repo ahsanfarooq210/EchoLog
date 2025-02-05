@@ -1,2 +1,2 @@
 export * from './auth'
-export {toNodeHandler} from "better-auth/node"
+export {toNodeHandler,fromNodeHeaders} from "better-auth/node"
