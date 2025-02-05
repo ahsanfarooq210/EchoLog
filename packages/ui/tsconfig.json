@@ -4,7 +4,8 @@
     //"outDir": "dist"
     "baseUrl": ".",
     "paths": {
-      "@workspace/ui/*": ["./src/*"]
+      "@workspace/ui/*": ["./src/*"],
+      "react": ["./node_modules/@types/react"]
     }
   },
   "include": ["."],
