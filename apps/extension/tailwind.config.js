@@ -1,6 +1,8 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./src/**/*.{tsx,html}"],
+import config from "@workspace/ui/tailwind.config"
+
+const tailwindConfig = {
+  ...config,
   darkMode: "media",
-  prefix: "plasmo-"
 }
+
+export default tailwindConfig
