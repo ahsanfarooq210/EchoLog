@@ -18,6 +18,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "../frontend-web/src/hooks/use-toast.ts", "../frontend-web/src/hooks/use-mobile.tsx"  ],
   "exclude": ["node_modules"]
 }

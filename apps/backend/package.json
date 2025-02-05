@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "@workspace/backend",
   "version": "0.0.0",
   "main": "dist/index.js",
   "private": true,
@@ -11,8 +11,10 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
     "bcryptjs": "^2.4.3",
+    "better-auth": "^1.1.15",
     "config": "^3.3.12",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -31,6 +33,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.8",
+    "@types/node": "^22.13.1",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "ts-node-dev": "^2.0.0",
