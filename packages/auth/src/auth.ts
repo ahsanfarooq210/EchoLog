@@ -1,8 +1,9 @@
-import { betterAuth, toNodeHandler } from "better-auth";
+import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@workspace/db";
 
 export const auth = betterAuth({
+  trustedOrigins:[ "http://localhost:3000"],
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
