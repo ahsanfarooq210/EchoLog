@@ -17,7 +17,7 @@ declare global {
 app.use(
   cors({
     origin: Array.isArray(corsOrigin)
-      ? [...corsOrigin, process.env.FRONTEND_URL ?? "", "null"]
+      ? [...corsOrigin, process.env.FRONTEND_URL ?? "", "null","*"]
       : corsOrigin,
     credentials: true,
   })
@@ -30,14 +30,7 @@ app.all("/api/auth/*", toNodeHandler(auth));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: Array.isArray(corsOrigin)
-      ? [...corsOrigin, process.env.FRONTEND_URL ?? "", "null"]
-      : corsOrigin,
-    credentials: true,
-  })
-);
+
 
 // Logging middleware
 app.use(loggerMiddleware);

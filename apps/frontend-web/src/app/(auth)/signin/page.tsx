@@ -75,7 +75,8 @@ const SignInPage: React.FC = () => {
 
     try {
       await authClient.signIn.social({
-        provider: "google" as const  // Using const assertion for literal type
+        provider: "google" as const,  // Using const assertion for literal type
+        callbackURL:"http://localhost:3000/dashbaord"
       });
       
       // Handle successful Google sign-in
