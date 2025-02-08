@@ -1,9 +1,9 @@
-import express, { Express,Request,Response } from "express";
+import express, { Express } from "express";
 import cors from "cors";
 import { corsOrigin } from "./utils/general";
 import { loggerMiddleware } from "./middlewares/logger.middleware";
 import { prepareV1Routes } from "./apiVersions/v1";
-import { auth, fromNodeHeaders, toNodeHandler } from "@workspace/auth";
+import { auth, toNodeHandler } from "@workspace/auth";
 
 const app: Express = express();
 
