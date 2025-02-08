@@ -3,7 +3,8 @@ import cors from "cors";
 import { corsOrigin } from "./utils/general";
 import { loggerMiddleware } from "./middlewares/logger.middleware";
 import { prepareV1Routes } from "./apiVersions/v1";
-import { auth, toNodeHandler } from "@workspace/auth";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./utils/auth";
 
 const app: Express = express();
 
@@ -17,7 +18,7 @@ declare global {
 app.use(
   cors({
     origin: Array.isArray(corsOrigin)
-      ? [...corsOrigin, process.env.FRONTEND_URL ?? "", "null","*"]
+      ? [...corsOrigin, process.env.FRONTEND_URL ?? "", "null", "*"]
       : corsOrigin,
     credentials: true,
   })
@@ -30,7 +31,6 @@ app.all("/api/auth/*", toNodeHandler(auth));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // Logging middleware
 app.use(loggerMiddleware);

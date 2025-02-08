@@ -11,10 +11,9 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@workspace/auth": "workspace:*",
     "@workspace/db": "workspace:*",
     "bcryptjs": "^2.4.3",
-    "better-auth": "^1.1.15",
+    "better-auth": "^1.1.16",
     "config": "^3.3.12",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

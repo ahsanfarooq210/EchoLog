@@ -10,8 +10,8 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@workspace/auth": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "better-auth": "^1.1.16",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
     "lucide-react": "0.456.0",
