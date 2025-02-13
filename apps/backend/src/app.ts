@@ -23,6 +23,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(loggerMiddleware);
 
 app.all("/api/auth/*", toNodeHandler(auth));
 // Mount express json middleware after Better Auth handler
@@ -33,7 +34,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Logging middleware
-app.use(loggerMiddleware);
 
 // Import and prepare routes
 prepareV1Routes(app);

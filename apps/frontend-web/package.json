@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@workspace/ui": "workspace:*",
+    "axios": "^1.7.9",
     "better-auth": "^1.1.16",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
