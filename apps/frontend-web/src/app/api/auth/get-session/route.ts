@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    console.log("backend request", request.headers.get("cookie"));
     const response = await axios.get(
       "http://localhost:3001/api/auth/get-session",
       {
@@ -12,7 +11,9 @@ export async function GET(request: NextRequest) {
         },
       }
     );
-    // console.log("backend auth resonse", response.data);
+    console.log("backend auth resonse", response.data);
+    const headers = response.headers;
+    console.log("response headers", headers);
     return NextResponse.json(
       {
         ...response.data,

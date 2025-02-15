@@ -38,10 +38,25 @@ const SignInPage: React.FC = () => {
     setError("");
 
     try {
-      await authClient.signIn.email({
-        email: formData.email,
-        password: formData.password,
-      });
+      await authClient.signIn.email(
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          onSuccess: (ctx) => {
+            const authToken = ctx.response.headers.get("set-auth-token"); // get the token from the response headers
+            // Store the token securely (e.g., in localStorage)
+            console.log("auth bearer token", authToken);
+            if (authToken) {
+              localStorage.setItem("bearer_token", authToken);
+            }
+          },
+          onError: (error) => {
+            console.log("error while signing in", error);
+          },
+        }
+      );
     } catch (err) {
       const authError = err as AuthError;
       setError(authError.message || "Failed to sign in");
@@ -55,10 +70,25 @@ const SignInPage: React.FC = () => {
     setError("");
 
     try {
-      await authClient.signIn.social({
-        provider: "google" as const,
-        callbackURL: "http://localhost:3000/dashboard",
-      });
+      await authClient.signIn.social(
+        {
+          provider: "google" as const,
+          callbackURL: "http://localhost:3000/dashboard",
+        },
+        {
+          onSuccess: (ctx) => {
+            const authToken = ctx.response.headers.get("set-auth-token"); // get the token from the response headers
+            // Store the token securely (e.g., in localStorage)
+            console.log("auth bearer token", authToken);
+            if (authToken) {
+              localStorage.setItem("bearer_token", authToken);
+            }
+          },
+          onError: (error) => {
+            console.log("error while signing in", error);
+          },
+        }
+      );
     } catch (err) {
       const authError = err as AuthError;
       setError(authError.message || "Failed to sign in with Google");
