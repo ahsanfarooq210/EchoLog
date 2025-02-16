@@ -46,7 +46,10 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error("Authentication error:", error);
-    return NextResponse.redirect(new URL("/signin", request.nextUrl.origin));
+
+    if (!isSigninPage) {
+      return NextResponse.redirect(new URL("/signin", request.nextUrl.origin));
+    }
   }
 }
 
