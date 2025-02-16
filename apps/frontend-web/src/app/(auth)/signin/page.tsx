@@ -115,8 +115,18 @@ const SignInPage: React.FC = () => {
 
       {/* Right side with enhanced form styling and glow effect */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
-          <div className="relative bg-card p-8 rounded-lg shadow-lg before:absolute before:inset-0 before:-z-10 before:rounded-lg before:bg-gradient-to-r before:from-primary/10 before:via-secondary/10 before:to-primary/10 before:blur-xl before:content-['']">
+        <div
+          className="w-full max-w-md space-y-8 relative
+  before:absolute before:inset-0 before:-z-30 before:h-[calc(100%+4rem)] before:w-[calc(100%+4rem)] before:-translate-x-8 before:-translate-y-8 
+  before:bg-gradient-conic before:from-primary/10 before:via-primary/5 before:to-primary/10 
+  before:rounded-[2rem] before:blur-3xl before:content-[''] before:animate-spin-slow"
+        >
+          <div
+            className="relative bg-card p-8 rounded-lg shadow-lg 
+  before:absolute before:inset-0 before:-z-10 before:rounded-lg before:bg-gradient-to-r before:from-primary/10 before:via-secondary/10 before:to-primary/10 before:blur-xl before:content-['']
+  after:absolute after:inset-0 after:-z-20 after:rounded-lg after:bg-gradient-to-r after:from-primary/20 after:via-primary/5 after:to-primary/20 after:blur-2xl after:content-[''] 
+  animate-pulse-slow"
+          >
             <div className="text-center">
               <h2 className="text-3xl font-bold text-card-foreground tracking-tight">
                 Sign in to your account
