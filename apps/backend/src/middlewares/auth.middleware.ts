@@ -16,7 +16,11 @@ export const authenticateionMiddleware = async (
       res.status(401).json({ message: "Unauthorized" });
       return;
     }
-
     req.user = session;
-  } catch (error) {}
+    next();
+  } catch (error) {
+    console.log("error in the authentication middleware");
+    res.status(401).json({ message: "Invalid Session" });
+    return;
+  }
 };
