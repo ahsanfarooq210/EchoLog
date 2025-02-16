@@ -14,6 +14,8 @@ router.get("/me", async (req: any, res: any) => {
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(req.headers),
   });
+  // const accounts = await auth.api.listUserAccounts()
+  // console.log("backend session",accounts)
   return res.json(session);
 });
 
