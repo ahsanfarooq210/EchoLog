@@ -1,6 +1,7 @@
 import { Loader2, Lock, Mail } from "lucide-react"
 import React, { useEffect, useState, type FormEvent } from "react"
 import { authClient } from "src/auth/auth-client"
+import axios from "axios"
 
 interface FormState {
   email: string
@@ -65,7 +66,7 @@ const Signin: React.FC = () => {
       url.searchParams.set('client_id', process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID || '')
       url.searchParams.set('response_type', 'code')
       url.searchParams.set('access_type', 'offline')
-      url.searchParams.set('prompt', 'consent')  // Force to show consent screen to get refresh token
+      url.searchParams.set('prompt', 'consent')
       url.searchParams.set('redirect_uri', redirectURL)
 
       const scopes = [
@@ -99,29 +100,28 @@ const Signin: React.FC = () => {
         throw new Error('Failed to get authorization code')
       }
 
-      // Exchange code for tokens
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
+      // Exchange code for tokens using axios
+      const { data: tokens } = await axios.post(
+        'https://oauth2.googleapis.com/token',
+        {
           code,
-          client_id: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID || '',
-          client_secret: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_SECRET || '',
+          client_id: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID,
+          client_secret: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_SECRET,
           redirect_uri: chrome.identity.getRedirectURL(),
           grant_type: 'authorization_code',
-        })
-      });
+        },
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          transformRequest: [(data) => {
+            return new URLSearchParams(data).toString()
+          }]
+        }
+      );
 
-      if (!tokenResponse.ok) {
-        throw new Error('Failed to exchange code for tokens');
-      }
-
-      const tokens = await tokenResponse.json();
       console.log("tokens", tokens)
 
-      // Now you can use these tokens with your auth client
       const data = await authClient.signIn.social({
         provider: "google",
         idToken: {
@@ -134,12 +134,13 @@ const Signin: React.FC = () => {
 
       console.log('Authentication successful:', data)
 
-
-
-
     } catch (err) {
-      const authError = err as AuthError
-      setError(authError.message || "Failed to sign in with Google")
+      const authError = err as AuthError | Error
+      setError(
+        'message' in authError 
+          ? authError.message 
+          : "Failed to sign in with Google"
+      )
     } finally {
       setLoading(false)
     }
