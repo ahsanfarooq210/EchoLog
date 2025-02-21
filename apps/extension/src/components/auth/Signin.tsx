@@ -36,6 +36,8 @@ const Signin: React.FC = () => {
     setLoading(true)
     setError("")
 
+    console.log("use effect ran", chrome.runtime.id)
+
     try {
       await authClient.signIn.email({
         email: formData.email,
@@ -52,26 +54,24 @@ const Signin: React.FC = () => {
   const handleGoogleSignIn = async (): Promise<void> => {
     setLoading(true)
     setError("")
-
     try {
       if (!chrome?.identity) {
         throw new Error("Chrome identity API not available")
       }
-
+      console.log("plasmo client id", process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID)
       const url = new URL('https://accounts.google.com/o/oauth2/auth')
-
+      const redirectURL = chrome.identity.getRedirectURL();
+      console.log("redirect url", redirectURL)
       url.searchParams.set('client_id', process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID || '')
       url.searchParams.set('response_type', 'code')
       url.searchParams.set('access_type', 'offline')
       url.searchParams.set('prompt', 'consent')  // Force to show consent screen to get refresh token
-      url.searchParams.set('redirect_uri', `https://${chrome.runtime.id}.chromiumapp.org`)
+      url.searchParams.set('redirect_uri', redirectURL)
 
       const scopes = [
         'openid',
         'email',
         'profile',
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile'
       ]
       url.searchParams.set('scope', scopes.join(' '))
 
@@ -92,32 +92,48 @@ const Signin: React.FC = () => {
       })
 
       const redirectUrl = new URL(redirectedTo)
-      const params = new URLSearchParams(redirectUrl.search)  // Changed from hash to search
+      const params = new URLSearchParams(redirectUrl.search)
       const code = params.get('code')
-
-      const params2 = new URLSearchParams(redirectUrl.hash.substring(1))
-
-      const idToken = params2.get('id_token')
-      const accessToken = params2.get('access_token')
-      const refreshToken = params2.get('refresh_token')
-      const accessTokenExpiry = params2.get('expires_in')
-
 
       if (!code) {
         throw new Error('Failed to get authorization code')
       }
-      console.log('Authentication successful:', code)
 
+      // Exchange code for tokens
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          code,
+          client_id: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID || '',
+          client_secret: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_SECRET || '',
+          redirect_uri: chrome.identity.getRedirectURL(),
+          grant_type: 'authorization_code',
+        })
+      });
 
+      if (!tokenResponse.ok) {
+        throw new Error('Failed to exchange code for tokens');
+      }
+
+      const tokens = await tokenResponse.json();
+      console.log("tokens", tokens)
+
+      // Now you can use these tokens with your auth client
       const data = await authClient.signIn.social({
         provider: "google",
         idToken: {
-          token: idToken || "",
-          accessToken: accessToken || "",
-          refreshToken: refreshToken || "",
-          expiresAt: parseInt(accessTokenExpiry || "0") * 1000,
+          token: tokens.id_token || "",
+          accessToken: tokens.access_token || "",
+          refreshToken: tokens.refresh_token || "",
+          expiresAt: Date.now() + (tokens.expires_in * 1000),
         }
-      })
+      });
+
+      console.log('Authentication successful:', data)
+
 
 
 
@@ -130,16 +146,7 @@ const Signin: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log("use effect ran")
-    chrome.cookies.getAll(
-      { domain: "http://localhost:3000" },
-      function (cookies) {
-        cookies.forEach(function (cookie) {
-          // You can now use these cookies in your extension
-          console.log(cookie.name + ": " + cookie.value)
-        })
-      }
-    )
+    console.log("use effect ran", chrome.runtime.id)
   }, [])
 
   return (
