@@ -1,21 +1,21 @@
 import { authClient } from "@/auth/auth-client"
 import Signin from "@/components/auth/Signin"
-import React from "react"
+import Signup from "@/components/auth/Signup"
+import React, { useEffect } from "react"
 
 const Router = () => {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch //refetch the session
-  } = authClient.useSession()
+  const session = authClient.useSession()
 
-  console.log("session data", { session, isPending, error })
+  console.log("session data", { ...session })
 
-  if (!session) {
+  useEffect(() => {
+
+  }, [])
+
+  if (!session.data) {
     return <Signin />
   }
-  return <div>Router</div>
+  return <div className="w-full h-full">Router</div>
 }
 
 export default Router

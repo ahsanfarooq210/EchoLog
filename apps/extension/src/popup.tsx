@@ -5,7 +5,11 @@ import "./style.css"
 import Signin from "@/components/auth/Signin"
 
 function IndexPopup() {
-  return <Router />
+  return (
+    <div className="w-[500px] h-[700px]">
+      <Router />
+    </div>
+  )
 }
 
 export default IndexPopup

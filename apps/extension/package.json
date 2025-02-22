@@ -38,7 +38,7 @@
   "manifest": {
     "key": "$CRX_PUBLIC_KEY",
     "host_permissions": [
-      "http://localhost:3001"
+      "http://localhost:3001/*"
     ],
     "oauth2": {
       "client_id": "$PLASMO_PUBLIC_GOOGLE_CLIENT_ID",

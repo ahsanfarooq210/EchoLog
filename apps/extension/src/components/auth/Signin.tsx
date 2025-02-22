@@ -1,7 +1,7 @@
+import axios from "axios"
 import { Loader2, Lock, Mail } from "lucide-react"
 import React, { useEffect, useState, type FormEvent } from "react"
 import { authClient } from "src/auth/auth-client"
-import axios from "axios"
 
 interface FormState {
   email: string
@@ -59,34 +59,36 @@ const Signin: React.FC = () => {
       if (!chrome?.identity) {
         throw new Error("Chrome identity API not available")
       }
-      console.log("plasmo client id", process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID)
-      const url = new URL('https://accounts.google.com/o/oauth2/auth')
-      const redirectURL = chrome.identity.getRedirectURL();
+      console.log(
+        "plasmo client id",
+        process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID
+      )
+      const url = new URL("https://accounts.google.com/o/oauth2/auth")
+      const redirectURL = chrome.identity.getRedirectURL()
       console.log("redirect url", redirectURL)
-      url.searchParams.set('client_id', process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID || '')
-      url.searchParams.set('response_type', 'code')
-      url.searchParams.set('access_type', 'offline')
-      url.searchParams.set('prompt', 'consent')
-      url.searchParams.set('redirect_uri', redirectURL)
+      url.searchParams.set(
+        "client_id",
+        process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID || ""
+      )
+      url.searchParams.set("response_type", "code")
+      url.searchParams.set("access_type", "offline")
+      url.searchParams.set("prompt", "consent")
+      url.searchParams.set("redirect_uri", redirectURL)
 
-      const scopes = [
-        'openid',
-        'email',
-        'profile',
-      ]
-      url.searchParams.set('scope', scopes.join(' '))
+      const scopes = ["openid", "email", "profile"]
+      url.searchParams.set("scope", scopes.join(" "))
 
       const redirectedTo = await new Promise<string>((resolve, reject) => {
         chrome.identity.launchWebAuthFlow(
           {
             url: url.href,
-            interactive: true,
+            interactive: true
           },
           (redirectUrl) => {
             if (chrome.runtime.lastError) {
               reject(new Error(chrome.runtime.lastError.message))
             } else {
-              resolve(redirectUrl || '')
+              resolve(redirectUrl || "")
             }
           }
         )
@@ -94,31 +96,33 @@ const Signin: React.FC = () => {
 
       const redirectUrl = new URL(redirectedTo)
       const params = new URLSearchParams(redirectUrl.search)
-      const code = params.get('code')
+      const code = params.get("code")
 
       if (!code) {
-        throw new Error('Failed to get authorization code')
+        throw new Error("Failed to get authorization code")
       }
 
       // Exchange code for tokens using axios
       const { data: tokens } = await axios.post(
-        'https://oauth2.googleapis.com/token',
+        "https://oauth2.googleapis.com/token",
         {
           code,
           client_id: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_ID,
           client_secret: process.env.PLASMO_PUBLIC_GOOGLE_CLIENT_SECRET,
           redirect_uri: chrome.identity.getRedirectURL(),
-          grant_type: 'authorization_code',
+          grant_type: "authorization_code"
         },
         {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Content-Type": "application/x-www-form-urlencoded"
           },
-          transformRequest: [(data) => {
-            return new URLSearchParams(data).toString()
-          }]
+          transformRequest: [
+            (data) => {
+              return new URLSearchParams(data).toString()
+            }
+          ]
         }
-      );
+      )
 
       console.log("tokens", tokens)
 
@@ -128,17 +132,16 @@ const Signin: React.FC = () => {
           token: tokens.id_token || "",
           accessToken: tokens.access_token || "",
           refreshToken: tokens.refresh_token || "",
-          expiresAt: Date.now() + (tokens.expires_in * 1000),
+          expiresAt: Date.now() + tokens.expires_in * 1000
         }
-      });
+      })
 
-      console.log('Authentication successful:', data)
-
+      console.log("Authentication successful:", data)
     } catch (err) {
       const authError = err as AuthError | Error
       setError(
-        'message' in authError 
-          ? authError.message 
+        "message" in authError
+          ? authError.message
           : "Failed to sign in with Google"
       )
     } finally {
@@ -146,12 +149,8 @@ const Signin: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    console.log("use effect ran", chrome.runtime.id)
-  }, [])
-
   return (
-    <div className="w-80 bg-background p-4">
+    <div className="w-full h-full bg-background p-4">
       <div className="space-y-4">
         {/* Header */}
         <div className="text-center">

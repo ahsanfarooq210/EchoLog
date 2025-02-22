@@ -5,8 +5,9 @@ import { prisma } from "@workspace/db";
 export const auth = betterAuth({
   trustedOrigins: [
     "http://localhost:3000",
-    "chrome-extension:pioepjhneakinedgdbmbgcedojncheoj",
-    "https://pioepjhneakinedgdbmbgcedojncheoj.chromiumapp.org/oauth2",
+    "chrome-extension://ldcpielebmbljegghchppiohjljmkdbc",
+    "https://ldcpielebmbljegghchppiohjljmkdbc.chromiumapp.org/oauth2",
+    "https://ldcpielebmbljegghchppiohjljmkdbc.chromiumapp.org/",
   ],
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
