@@ -1,8 +1,0 @@
-{
-    "env": "NODE_ENV",
-    "port": "PORT",
-    "frontendURL": "FRONTEND_URL",
-    "jwtPrivateKey": "JWT_SECRET",
-    "mongoUri": "MONGO_DB_CONNECT_STRING"
-  }
-  
