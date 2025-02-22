@@ -7,8 +7,6 @@
       "~*": ["./src/*"]
     },
     "strict": true,
-    "baseUrl": ".",
-    "module": "ESNext",
-    "moduleResolution": "bundler"
+    "baseUrl": "."
   }
 }
