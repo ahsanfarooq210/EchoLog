@@ -150,7 +150,7 @@ const Signin: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-full bg-background p-4">
+    <div className="w-full h-full p-4 bg-primary">
       <div className="space-y-4">
         {/* Header */}
         <div className="text-center">
