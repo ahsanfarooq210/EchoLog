@@ -1,7 +1,6 @@
-import { authClient } from "@/auth/auth-client"
-import Signin from "@/components/auth/Signin"
-import Signup from "@/components/auth/Signup"
 import React, { useEffect } from "react"
+import { authClient } from "~auth/auth-client"
+import Signin from "~components/auth/Signin"
 
 const Router = () => {
   const session = authClient.useSession()
