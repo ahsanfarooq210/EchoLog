@@ -1,7 +1,6 @@
+import { CountButton } from "@/features/count-button"
 import cssText from "data-text:~style.css"
 import type { PlasmoCSConfig } from "plasmo"
-
-import { CountButton } from "~features/count-button"
 
 export const config: PlasmoCSConfig = {
   matches: ["https://www.plasmo.com/*"]
