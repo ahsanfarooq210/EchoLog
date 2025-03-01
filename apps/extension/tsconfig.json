@@ -4,11 +4,9 @@
   "include": [".plasmo/index.d.ts", "./**/*.ts", "./**/*.tsx"],
   "compilerOptions": {
     "paths": {
-      "~*": ["./src/*"]
+      "@/*": ["./src/*"]
     },
     "strict": true,
-    "baseUrl": ".",
-    "module": "ESNext",
-    "moduleResolution": "bundler"
+    "baseUrl": "."
   }
 }
