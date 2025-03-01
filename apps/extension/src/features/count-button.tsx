@@ -1,10 +1,11 @@
+import { Button } from "@/components/ui/button"
 import { useReducer } from "react"
 
 export const CountButton = () => {
   const [count, increase] = useReducer((c) => c + 1, 0)
 
   return (
-    <button
+    <Button
       onClick={() => increase()}
       type="button"
       className="flex flex-row items-center px-4 py-2 text-sm rounded-lg transition-all border-none
@@ -14,6 +15,6 @@ export const CountButton = () => {
       <span className="inline-flex items-center justify-center w-8 h-4 ml-2 text-xs font-semibold rounded-full">
         {count}
       </span>
-    </button>
+    </Button>
   )
 }

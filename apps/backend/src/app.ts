@@ -8,13 +8,18 @@ import { auth } from "./utils/auth";
 
 const app: Express = express();
 
+type SessionUserType = typeof auth.$Infer.Session;
+
+// Extend Express Request to include the user
 declare global {
   namespace Express {
+    interface User extends SessionUserType {} // This makes req.user match your JWT payload
     interface Request {
-      user?: any;
+      user?: User;
     }
   }
 }
+
 app.use(
   cors({
     origin: Array.isArray(corsOrigin)

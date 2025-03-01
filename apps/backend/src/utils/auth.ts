@@ -1,10 +1,14 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@workspace/db";
-import { jwt, bearer } from "better-auth/plugins";
 
 export const auth = betterAuth({
-  trustedOrigins: ["http://localhost:3000"],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "chrome-extension://ldcpielebmbljegghchppiohjljmkdbc",
+    "https://ldcpielebmbljegghchppiohjljmkdbc.chromiumapp.org/oauth2",
+    "https://ldcpielebmbljegghchppiohjljmkdbc.chromiumapp.org/",
+  ],
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
@@ -15,13 +19,8 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      accessType:"offline",
-      prompt:"consent",
-    
+      accessType: "offline",
+      prompt: "consent",
     },
   },
-  plugins: [bearer()],
-  account:{
-
-  }
 });
