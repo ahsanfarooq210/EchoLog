@@ -4,13 +4,18 @@
  * A clean, typed approach to join and record Google Meet meetings using Puppeteer
  * With support for both authenticated and guest access
  */
-
-import puppeteer, { Browser, Page } from 'puppeteer';
+import puppeteer from 'puppeteer';
+import puppeteerExtra from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { Browser, Page } from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 import { PuppeteerScreenRecorder } from 'puppeteer-screen-recorder';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+
+// Add stealth plugin to puppeteer-extra
+puppeteerExtra.use(StealthPlugin());
 
 // Add missing waitForTimeout to Page interface
 declare module 'puppeteer' {
@@ -109,7 +114,7 @@ class GoogleMeetAutomation {
     public async launchBrowser(): Promise<void> {
         console.log('Launching browser...');
 
-        this.browser = await puppeteer.launch({
+        this.browser = await puppeteerExtra.launch({
             headless: this.options.headless,
             args: [
                 '--use-fake-ui-for-media-stream',         // Auto-accept camera/mic permissions
@@ -118,14 +123,17 @@ class GoogleMeetAutomation {
                 '--autoplay-policy=no-user-gesture-required',
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
-                '--disable-infobars'
+                '--disable-infobars',
+                '--disable-blink-features=AutomationControlled',
+                '--disable-web-security',
+                '--disable-features=IsolateOrigins,site-per-process'
             ],
             defaultViewport: null,                     // Use full window size
             ignoreDefaultArgs: ['--mute-audio']        // Allow audio capture
         });
 
         this.page = await this.browser.newPage();
-        console.log('Browser launched');
+        console.log('Browser launched with stealth mode');
     }
 
     /**
