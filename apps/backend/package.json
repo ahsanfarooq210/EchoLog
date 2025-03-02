@@ -24,6 +24,8 @@
     "jsonwebtoken": "^9.0.2",
     "puppeteer": "^24.2.0",
     "puppeteer-core": "^24.1.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "puppeteer-screen-recorder": "^3.0.6",
     "winston": "^3.17.0"
   },
