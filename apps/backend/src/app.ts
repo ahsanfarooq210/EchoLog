@@ -5,7 +5,6 @@ import { loggerMiddleware } from "./middlewares/logger.middleware";
 import { prepareV1Routes } from "./apiVersions/v1";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./utils/auth";
-import puppeteerRoutes from './routes/puppeteer.routes';
 
 const app: Express = express();
 
@@ -14,7 +13,7 @@ type SessionUserType = typeof auth.$Infer.Session;
 // Extend Express Request to include the user
 declare global {
   namespace Express {
-    interface User extends SessionUserType {} // This makes req.user match your JWT payload
+    interface User extends SessionUserType { } // This makes req.user match your JWT payload
     interface Request {
       user?: User;
     }
@@ -44,7 +43,5 @@ app.use(express.urlencoded({ extended: true }));
 // Import and prepare routes
 prepareV1Routes(app);
 
-// Register routes
-app.use('/api/meet', puppeteerRoutes);
 
 export { app };
