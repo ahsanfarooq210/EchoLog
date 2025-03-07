@@ -46,13 +46,14 @@ export class GoogleMeetService {
    */
   private initializeAutomation(options: Partial<GoogleMeetServiceOptions> = {}): GoogleMeetAutomation {
     if (!this.meetAutomation) {
-      this.meetAutomation = new GoogleMeetAutomation({
-        guestName: options.guestName || "EchoLog's Note Taker",
-        recordingPath: options.recordingPath || path.resolve(process.cwd(), 'recordings'),
-        cameraEnabled: options.cameraEnabled || false,
-        micEnabled: options.micEnabled || false,
-        headless: options.headless !== undefined ? options.headless : false
-      });
+      this.meetAutomation =new GoogleMeetAutomation({
+              guestName: `User ${Math.floor(Math.random() * 1000)}`,  // Random guest name
+              recordingPath: './meet-recordings',
+              cameraEnabled: false,
+              micEnabled: false,
+              useRealisticMovements: true,
+              randomizeViewport: true
+            });
     }
     return this.meetAutomation;
   }
