@@ -114,26 +114,108 @@ class GoogleMeetAutomation {
     public async launchBrowser(): Promise<void> {
         console.log('Launching browser...');
 
-        this.browser = await puppeteerExtra.launch({
-            headless: this.options.headless,
-            args: [
-                '--use-fake-ui-for-media-stream',         // Auto-accept camera/mic permissions
-                '--use-fake-device-for-media-stream',     // Use fake device if needed
-                '--disable-features=site-per-process',    // Needed for audio access
-                '--autoplay-policy=no-user-gesture-required',
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-infobars',
-                '--disable-blink-features=AutomationControlled',
-                '--disable-web-security',
-                '--disable-features=IsolateOrigins,site-per-process'
-            ],
-            defaultViewport: null,                     // Use full window size
-            ignoreDefaultArgs: ['--mute-audio']        // Allow audio capture
-        });
+        try {
+            this.browser = await puppeteerExtra.launch({
+                headless: this.options.headless,
+                args: [
+                    '--use-fake-ui-for-media-stream',         // Auto-accept camera/mic permissions
+                    '--use-fake-device-for-media-stream',     // Use fake device if needed
+                    '--disable-features=site-per-process',    // Needed for audio access
+                    '--autoplay-policy=no-user-gesture-required',
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-infobars',
+                    '--disable-blink-features=AutomationControlled',
+                    '--disable-web-security',
+                    '--disable-features=IsolateOrigins,site-per-process',
+                    '--window-size=1920,1080',                // Set window size
+                    '--disable-gpu',                          // Disable GPU acceleration
+                    '--disable-dev-shm-usage',                // Overcome limited resource problems
+                    '--lang=en-US,en',                        // Set language
+                    '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' // Set a common user agent
+                ],
+                defaultViewport: null,                     // Use full window size
+                ignoreDefaultArgs: ['--mute-audio'],       // Allow audio capture
+                timeout: 60000                             // Increase timeout to 60 seconds
+            });
 
-        this.page = await this.browser.newPage();
-        console.log('Browser launched with stealth mode');
+            this.page = await this.browser.newPage();
+
+            // Set additional page configurations
+            await this.page.setExtraHTTPHeaders({
+                'Accept-Language': 'en-US,en;q=0.9'
+            });
+
+            // Set cookies to appear more like a regular user
+            await this.page.setCookie({
+                name: 'CONSENT',
+                value: 'YES+',
+                domain: '.google.com',
+                path: '/'
+            });
+
+            console.log('Browser launched with stealth mode');
+        } catch (error) {
+            console.error('Browser launch failed:', error);
+            throw new Error(`Failed to launch browser: ${error}`);
+        }
+    }
+
+
+
+    /**
+     * Check if the "You can't join this video call" error is present
+     * @private
+     */
+    private async _checkForCantJoinError(): Promise<boolean> {
+        if (!this.page) return false;
+
+        try {
+            // Look for the error message text
+            const errorText = await this.page.evaluate(() => {
+                const elements = Array.from(document.querySelectorAll('div, span, p'));
+                for (const el of elements) {
+                    const text = el.textContent?.trim() || '';
+                    if (text.includes("You can't join this video call") ||
+                        text.includes("You can't join this meeting")) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            if (errorText) {
+                // Take a screenshot of the error
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                await this.page.screenshot({
+                    path: path.join(this.options.recordingPath, `cant-join-error-${timestamp}.png`)
+                });
+
+                // Try refreshing the page once to see if it helps
+                console.log("Detected join error, attempting to refresh the page...");
+                await this.page.reload({ waitUntil: 'networkidle2' });
+
+                // Check again after refresh
+                const errorAfterRefresh = await this.page.evaluate(() => {
+                    const elements = Array.from(document.querySelectorAll('div, span, p'));
+                    for (const el of elements) {
+                        const text = el.textContent?.trim() || '';
+                        if (text.includes("You can't join this video call") ||
+                            text.includes("You can't join this meeting")) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                return errorAfterRefresh;
+            }
+
+            return false;
+        } catch (error) {
+            console.error("Error checking for 'can't join' message:", error);
+            return false;
+        }
     }
 
     /**
@@ -156,6 +238,12 @@ class GoogleMeetAutomation {
             // Go to the meeting URL
             await this.page.goto(meetingUrl, { waitUntil: 'networkidle2' });
             console.log('Loaded meeting page');
+
+            const cantJoinError = await this._checkForCantJoinError();
+            if (cantJoinError) {
+                console.error("Detected 'You can't join this video call' error");
+                return false;
+            }
 
             // Check for different join options (as guest or with Google account)
             const loginPrompt = await this._checkForLoginOptions();
